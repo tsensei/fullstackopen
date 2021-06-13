@@ -1,0 +1,24 @@
+title exercise 0.5 
+
+browser -> server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+server-> browser: status 304, HTML-code
+
+browser -> server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-> browser: status 304, main.css
+
+browser -> server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+server-> browser: status 304, spa.js
+
+note over browser:
+browser starts executing js-code
+that requests JSON data from server 
+end note
+
+browser -> server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.js
+server-> browser: status 304, data.json
+
+note over browser:
+browser executes the event handler
+that renders notes to display
+end note
+
