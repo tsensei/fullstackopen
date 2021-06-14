@@ -49,62 +49,31 @@ const Button = ({ setState, title }) => {
 
 const Statistics = ({ good, neutral, bad }) => {
   return (
-    <>
-      <table>
-        <tbody>
-          <Statistic text="good" value={good} />
-          <Statistic text="neutral" value={neutral} />
-          <Statistic text="bad" value={bad} />
-          <ShowAll good={good} neutral={neutral} bad={bad} />
-          <ShowAverage good={good} neutral={neutral} bad={bad} />
-          <ShowPositive good={good} neutral={neutral} bad={bad} />
-        </tbody>
-      </table>
-    </>
+    <table>
+      <tbody>
+        <Statistic text="good" value={good} />
+        <Statistic text="neutral" value={neutral} />
+        <Statistic text="bad" value={bad} />
+        <Statistic text="all" value={good + neutral + bad} />
+        <Statistic
+          text="average"
+          value={(good - bad) / (good + neutral + bad)}
+        />
+        <Statistic
+          text="positive"
+          value={(good / (good + neutral + bad)) * 100 + "%"}
+        />
+      </tbody>
+    </table>
   );
 };
 
 const Statistic = ({ text, value }) => {
   return (
-    <>
-      <tr>
-        <td>{text}</td>
-        <td>{value}</td>
-      </tr>
-    </>
-  );
-};
-
-const ShowAll = ({ good, neutral, bad }) => {
-  return (
-    <>
-      <tr>
-        <td>all</td>
-        <td>{good + neutral + bad}</td>
-      </tr>
-    </>
-  );
-};
-const ShowAverage = ({ good, neutral, bad }) => {
-  const score = (good - bad) / (good + neutral + bad);
-  return (
-    <>
-      <tr>
-        <td>average</td>
-        <td>{score ? score : 0}</td>
-      </tr>
-    </>
-  );
-};
-const ShowPositive = ({ good, neutral, bad }) => {
-  const positive = (good / (good + neutral + bad)) * 100;
-  return (
-    <>
-      <tr>
-        <td>postive</td>
-        <td>{positive ? positive : 0}%</td>
-      </tr>
-    </>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   );
 };
 
