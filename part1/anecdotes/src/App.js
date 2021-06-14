@@ -27,13 +27,11 @@ const App = () => {
 
   const setSelectedRandom = () => {
     let random = Math.floor(Math.random() * anecdotes.length);
-
     setSelected(random);
   };
   const castVote = () => {
     const newVotes = [...votes];
     newVotes[selected] += 1;
-
     setVotes(newVotes);
   };
   return (
