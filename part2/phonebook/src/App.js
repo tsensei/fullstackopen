@@ -1,17 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
-
+import SearchFilter from "./components/SearchFilter";
+import AddForm from "./components/AddForm";
+import RenderPersons from "./components/RenderPersons";
+import personService from "./services/persons";
 const App = () => {
   const [persons, setPersons] = useState([]);
-
   const [queryText, setQueryText] = useState("");
-  //Filter array for search functionality
   const [filterArray, setFilterArray] = useState([]);
+  const nameRef = useRef();
+  const numberRef = useRef();
+
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((res) => setPersons(res.data));
+    personService.getPersons().then((data) => setPersons(data));
   }, []);
+
   useEffect(() => {
     const newArr = [...filterArray];
     persons.forEach((person, index) => {
@@ -23,16 +25,29 @@ const App = () => {
     });
     setFilterArray(newArr);
   }, [queryText, persons]);
-  console.log(filterArray);
-  const nameRef = useRef();
-  const numberRef = useRef();
-  const updateName = (e) => {
+
+  const addPerson = (e) => {
     e.preventDefault();
     let personExists = persons.find((person) => {
       return person.name === nameRef.current.value;
     });
     if (personExists) {
-      alert(`${nameRef.current.value} is already added to the phonebook`);
+      const willUpdatePerson = window.confirm(
+        `${nameRef.current.value} is already added to the phonebook,replace the old number with a new one?`
+      );
+      if (willUpdatePerson) {
+        const personObject = {
+          ...personExists,
+          number: numberRef.current.value,
+        };
+        personService.updatePerson(personObject).then((returnedPerson) => {
+          setPersons(
+            persons.map((person) => {
+              return person.id !== returnedPerson.id ? person : returnedPerson;
+            })
+          );
+        });
+      }
       nameRef.current.value = "";
       numberRef.current.value = "";
       return;
@@ -43,75 +58,43 @@ const App = () => {
       number: numberRef.current.value,
       id: persons.length + 1,
     };
-    setPersons(persons.concat(person));
-    setFilterArray(filterArray.concat(1));
+
+    personService
+      .createPerson(person)
+      .then((returnedPerson) => setPersons(persons.concat(returnedPerson)))
+      .then((_) => setFilterArray(filterArray.concat(1)));
     nameRef.current.value = "";
     numberRef.current.value = "";
   };
-  console.log(persons);
+
+  const deletePerson = (id) => {
+    let person = persons.find((person) => person.id === id);
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personService.deletePerson(person.id).then((statusCode) => {
+        if (statusCode === 200) {
+          setPersons(
+            persons.filter((person) => {
+              return person.id !== id;
+            })
+          );
+          alert("Successfully deleted");
+        }
+      });
+    }
+  };
   return (
     <div>
       <h2>Phonebook</h2>
       <SearchFilter setQueryText={setQueryText} />
       <h3>add a new</h3>
-      <AddForm
-        updateName={updateName}
-        nameRef={nameRef}
-        numberRef={numberRef}
-      />
+      <AddForm addPerson={addPerson} nameRef={nameRef} numberRef={numberRef} />
       <h2>Numbers</h2>
-      <RenderPersons persons={persons} filterArray={filterArray} />
-    </div>
-  );
-};
-
-const SearchFilter = ({ setQueryText }) => {
-  return (
-    <p>
-      filter shown with{" "}
-      <input
-        onChange={(e) => {
-          setQueryText(e.target.value);
-        }}
-        type="text"
+      <RenderPersons
+        deletePerson={deletePerson}
+        persons={persons}
+        filterArray={filterArray}
       />
-    </p>
-  );
-};
-
-const AddForm = ({ updateName, nameRef, numberRef }) => {
-  return (
-    <>
-      <form onSubmit={updateName}>
-        <div>
-          name: <input ref={nameRef} />
-        </div>
-        <div>
-          number: <input ref={numberRef} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-    </>
-  );
-};
-
-const RenderPersons = ({ persons, filterArray }) => {
-  return (
-    <>
-      {persons.map((person, index) =>
-        filterArray[index] === 1 ? <Person person={person} /> : ""
-      )}
-    </>
-  );
-};
-
-const Person = ({ person }) => {
-  return (
-    <p key={person.id}>
-      {person.name} {person.number}
-    </p>
+    </div>
   );
 };
 
