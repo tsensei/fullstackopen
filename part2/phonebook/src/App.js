@@ -3,10 +3,13 @@ import SearchFilter from "./components/SearchFilter";
 import AddForm from "./components/AddForm";
 import RenderPersons from "./components/RenderPersons";
 import personService from "./services/persons";
+import Notification from "./components/Notification";
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [queryText, setQueryText] = useState("");
   const [filterArray, setFilterArray] = useState([]);
+  const [notification, setNotification] = useState(null);
+  const [error, setError] = useState(false);
   const nameRef = useRef();
   const numberRef = useRef();
 
@@ -26,11 +29,28 @@ const App = () => {
     setFilterArray(newArr);
   }, [queryText, persons]);
 
+  const handleNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification(null);
+      setError(false);
+    }, 3000);
+  };
+
   const addPerson = (e) => {
     e.preventDefault();
     let personExists = persons.find((person) => {
-      return person.name === nameRef.current.value;
+      console.log(
+        person.name,
+        nameRef.current.value,
+        person.name.trim().localeCompare(nameRef.current.value.trim())
+      );
+      return person.name.trim().localeCompare(nameRef.current.value.trim()) ===
+        0
+        ? 1
+        : 0;
     });
+    console.log(personExists);
     if (personExists) {
       const willUpdatePerson = window.confirm(
         `${nameRef.current.value} is already added to the phonebook,replace the old number with a new one?`
@@ -40,14 +60,33 @@ const App = () => {
           ...personExists,
           number: numberRef.current.value,
         };
-        personService.updatePerson(personObject).then((returnedPerson) => {
-          setPersons(
-            persons.map((person) => {
-              return person.id !== returnedPerson.id ? person : returnedPerson;
-            })
-          );
-        });
+        personService
+          .updatePerson(personObject)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) => {
+                return person.id !== returnedPerson.id
+                  ? person
+                  : returnedPerson;
+              })
+            );
+          })
+          .then((_) =>
+            handleNotification(`Updated ${personObject.name}'s number`)
+          )
+          .catch((_) => {
+            setPersons(
+              persons.filter((person) => {
+                return person.id !== personObject.id;
+              })
+            );
+            setError(true);
+            handleNotification(
+              `${personObject.name} has already been removed from over server`
+            );
+          });
       }
+
       nameRef.current.value = "";
       numberRef.current.value = "";
       return;
@@ -62,7 +101,8 @@ const App = () => {
     personService
       .createPerson(person)
       .then((returnedPerson) => setPersons(persons.concat(returnedPerson)))
-      .then((_) => setFilterArray(filterArray.concat(1)));
+      .then((_) => setFilterArray(filterArray.concat(1)))
+      .then((_) => handleNotification(`Created ${person.name}`));
     nameRef.current.value = "";
     numberRef.current.value = "";
   };
@@ -77,7 +117,6 @@ const App = () => {
               return person.id !== id;
             })
           );
-          alert("Successfully deleted");
         }
       });
     }
@@ -85,6 +124,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification error={error ? "red" : "green"} message={notification} />
       <SearchFilter setQueryText={setQueryText} />
       <h3>add a new</h3>
       <AddForm addPerson={addPerson} nameRef={nameRef} numberRef={numberRef} />
