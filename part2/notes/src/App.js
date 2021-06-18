@@ -7,7 +7,7 @@ const App = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("some error happened...");
+  const [errorMessage, setErrorMessage] = useState();
   useEffect(() => {
     noteService.getAll().then((initialNotes) => setNotes(initialNotes));
   }, []);
@@ -58,7 +58,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage} />
+      {errorMessage && <Notification message={errorMessage} />}
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? "important" : "all"}{" "}
