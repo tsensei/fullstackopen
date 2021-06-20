@@ -40,11 +40,11 @@ const App = () => {
   const addPerson = (e) => {
     e.preventDefault();
     let personExists = persons.find((person) => {
-      console.log(
-        person.name,
-        nameRef.current.value,
-        person.name.trim().localeCompare(nameRef.current.value.trim())
-      );
+      // console.log(
+      //   person.name,
+      //   nameRef.current.value,
+      //   person.name.trim().localeCompare(nameRef.current.value.trim())
+      // );
       return person.name.trim().localeCompare(nameRef.current.value.trim()) ===
         0
         ? 1
@@ -74,16 +74,10 @@ const App = () => {
           .then((_) =>
             handleNotification(`Updated ${personObject.name}'s number`)
           )
-          .catch((_) => {
-            setPersons(
-              persons.filter((person) => {
-                return person.id !== personObject.id;
-              })
-            );
+          .catch((error) => {
+            console.log(error.response);
+            handleNotification(error.response.data.message);
             setError(true);
-            handleNotification(
-              `${personObject.name} has already been removed from over server`
-            );
           });
       }
 
@@ -95,14 +89,18 @@ const App = () => {
     let person = {
       name: nameRef.current.value,
       number: numberRef.current.value,
-      id: persons.length + 1,
     };
 
     personService
       .createPerson(person)
       .then((returnedPerson) => setPersons(persons.concat(returnedPerson)))
       .then((_) => setFilterArray(filterArray.concat(1)))
-      .then((_) => handleNotification(`Created ${person.name}`));
+      .then((_) => handleNotification(`Created ${person.name}`))
+      .catch((err) => {
+        console.log(err.response);
+        handleNotification(err.response.data.message);
+        setError(true);
+      });
     nameRef.current.value = "";
     numberRef.current.value = "";
   };
@@ -110,20 +108,17 @@ const App = () => {
   const deletePerson = (id) => {
     let person = persons.find((person) => person.id === id);
     if (window.confirm(`Delete ${person.name} ?`)) {
-      personService.deletePerson(person.id).then((statusCode) => {
-        if (statusCode === 200) {
-          setPersons(
-            persons.filter((person) => {
-              return person.id !== id;
-            })
-          );
+      personService.deletePerson(person.id).then((status) => {
+        if (status === 200) {
+          setPersons(persons.filter((person) => person.id !== id));
         }
       });
     }
   };
+
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h2>Phonebook!!</h2>
       <Notification error={error ? "red" : "green"} message={notification} />
       <SearchFilter setQueryText={setQueryText} />
       <h3>add a new</h3>
