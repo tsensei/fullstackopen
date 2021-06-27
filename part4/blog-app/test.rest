@@ -1,0 +1,58 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhbGhhIiwiaWQiOiI2MGQ4MDVhNmJjNGM4YjMxMjQzNTMyMTYiLCJpYXQiOjE2MjQ3Njk5NjN9.tByVIasCeuxT4puChTU70bWJhaGyQRLM1xuPEeO99PU
+
+{
+  "title": "Create an lalaala app",
+  "url": "https://www.twitter.com",
+  "likes": 200
+}
+
+###
+DELETE http://localhost:3001/api/blogs/60d805bfbc4c8b312435321c
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhbGhhIiwiaWQiOiI2MGQ4MDVhNmJjNGM4YjMxMjQzNTMyMTYiLCJpYXQiOjE2MjQ3Njk5NjN9.tByVIasCeuxT4puChTU70bWJhaGyQRLM1xuPEeO99PU
+
+
+###
+GET http://localhost:3001/api/blogs
+
+###
+GET http://localhost:3001/api/blogs/60d0066168891b21ced92ad9
+
+###
+DELETE http://localhost:3001/api/blogs/60d0066168891b21ced92ad9
+
+###
+PUT http://localhost:3001/api/blogs/60d0067468891b21ced92adb
+Content-Type: application/json
+
+{
+    "title": "Create an mango app",
+    "author": "tsenpai",
+    "url": "https://www.freecodecamp.com"
+}
+
+###
+
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username":"talha",
+  "name":"talha",
+  "password":"password"
+}
+
+###
+
+GET http://localhost:3001/api/users
+
+###
+
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username":"talha",
+  "password":"password"
+}
