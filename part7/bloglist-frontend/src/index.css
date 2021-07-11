@@ -1,0 +1,121 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+.app {
+  min-height: 100vh;
+  background-color: #12181b;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  outline: none;
+  margin: 1rem;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: #2a2e35;
+  padding: 15px 0;
+}
+
+.navbar * {
+  text-decoration: none;
+  color: white;
+}
+
+.navbar button {
+  color: black;
+  background-color: white;
+  border: none;
+  outline: none;
+  padding: 5px 8px;
+  border-radius: 7px;
+  margin-left: 10px;
+}
+
+.header {
+  color: white;
+  font-size: 3rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.blog {
+  color: white;
+  text-align: center;
+  background-color: #2a2e35;
+  font-size: 1.3rem;
+  padding: 1rem 0;
+  margin: 0.5rem 1rem;
+}
+
+.blog * {
+  text-decoration: none;
+  color: white;
+}
+
+.blogForm {
+  margin: 1rem;
+  color: white;
+}
+
+.blogForm div {
+  padding: 0.2rem;
+}
+
+.users {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.users * {
+  color: white;
+  padding: 0.8rem;
+}
+
+.blogSingle {
+  color: white;
+  text-align: center;
+  background-color: #2a2e35;
+  font-size: 1.3rem;
+  padding: 1rem 0;
+  margin: 0.5rem 1rem;
+}
+
+.blogSingle * {
+  margin: 0.5rem 0;
+}
+
+.blogSingle a {
+  text-decoration: none;
+  color: aliceblue;
+}
+
+.blogSingle input {
+  height: 3rem;
+  width: 50%;
+}
+
+.loginForm {
+  color: white;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.loginForm div {
+  margin: 1rem 0;
+}
